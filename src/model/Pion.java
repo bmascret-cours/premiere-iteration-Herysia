@@ -32,6 +32,7 @@ public class Pion extends AbstractPieces implements Pions{
     }
     @Override
     public boolean isMoveDiagOk(int xFinal, int yFinal) {
+        //Todo: check if we capture
         boolean moveOk = true;
         if(Math.abs(xFinal - this.getX()) != 1) {
             moveOk = false;

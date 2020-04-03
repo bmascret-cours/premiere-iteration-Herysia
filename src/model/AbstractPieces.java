@@ -10,7 +10,7 @@ public abstract class AbstractPieces implements Pieces {
     }
 
     public boolean capture() {
-        boolean captured = false;
+        boolean captured = coord.x != -1 && coord.y != -1;
         if(captured) {
             coord.x = coord.y = -1;
         }
@@ -28,7 +28,7 @@ public abstract class AbstractPieces implements Pieces {
 
     public abstract boolean isMoveOk(int xFinal, int yFinal);
     public boolean move(int xFinal, int yFinal) {
-        boolean moveOk = isMoveOk(xFinal, yFinal);
+        boolean moveOk = (xFinal != 0 || yFinal != 0) && isMoveOk(xFinal, yFinal);
         if(moveOk) {
             this.coord.x = xFinal;
             this.coord.y = yFinal;
