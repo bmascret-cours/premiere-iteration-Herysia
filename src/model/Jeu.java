@@ -94,6 +94,9 @@ public class Jeu {
             ret = true;
         return ret;
     }
+    List<Pieces> getPieces() {
+        return new LinkedList<Pieces>(pieces);
+    }
     boolean	isPieceHere(int x, int y) {
         return findPiece(x, y) != null;
     }

@@ -1,6 +1,6 @@
 package launcher.localLauncher;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.util.Observer;
 
 import javax.swing.JFrame;
@@ -8,7 +8,8 @@ import javax.swing.JFrame;
 import controler.ChessGameControlers;
 import controler.controlerLocal.ChessGameControler;
 import model.observable.ChessGame;
-//import vue.ChessGameGUI;
+import vue.ChessGameCmdLine;
+import vue.ChessGameGUI;
 
 
 
@@ -25,7 +26,7 @@ public class LauncherGUI {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-/*
+
 		ChessGame chessGame;	
 		ChessGameControlers chessGameControler;
 		JFrame frame;	
@@ -38,13 +39,16 @@ public class LauncherGUI {
 		
 		frame = new ChessGameGUI("Jeu d'échec", chessGameControler,  dim);
 		chessGame.addObserver((Observer) frame);
-		
+		frame.setBackground(Color.RED);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocation(600, 10);
-		frame.setPreferredSize(dim);
+		frame.setPreferredSize(new Dimension(dim.width+12, dim.height+40));
 		frame.pack();
 		frame.setVisible(true);
 
- */
+		/*ChessGameCmdLine vue;
+		vue = new ChessGameCmdLine((ChessGameControler)chessGameControler);
+		chessGame.addObserver((Observer) vue);*/
+
 	}
 }
