@@ -29,7 +29,7 @@ public class Echiquier implements BoardGames {
         }
         //check si on est en échec
         if(ret && enEchec()) {
-            //TODO:
+            //TODO: undoMove implementation
             //jeuCourant.undoMove();
             jeuCourant.move(xFinal, yFinal, xInit, yInit);
             ret = false;

@@ -19,7 +19,6 @@ public class Jeu {
         boolean capture = false;
         Pieces piece = findPiece(xCatch, yCatch);
         if(piece != null) {
-            //TODO: prendre en compte les pièces intermédiaires
             capture = piece.capture();
         }
         return capture;
@@ -108,7 +107,7 @@ public class Jeu {
         return moveOk;
     }
     boolean	pawnPromotion(int xFinal, int yfinal, String type) {
-        //TODO
+        //TODO pawnPromotion implementation + call
         return false;
     }
     void setCastling() {
