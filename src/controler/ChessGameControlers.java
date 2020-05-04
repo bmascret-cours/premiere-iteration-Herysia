@@ -1,6 +1,7 @@
 package controler;
 
 import model.Coord;
+import model.Couleur;
 
 public interface ChessGameControlers {
 
@@ -29,4 +30,5 @@ public interface ChessGameControlers {
 	 */
 	public boolean isPlayerOK(Coord initCoord);
 
+	public boolean isMoveOk(Coord c, Coord coord);
 }

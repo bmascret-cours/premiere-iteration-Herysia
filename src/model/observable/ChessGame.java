@@ -71,6 +71,9 @@ public class ChessGame extends Observable implements BoardGames{
 		this.notifyObservers(echiquier.getPiecesIHM()); 
 		return ret;	
 	}
+	public boolean isMoveOk(int xInit, int yInit, int xFinal, int yFinal) {
+		return echiquier.isMoveOk(xInit, yInit, xFinal, yFinal);
+	}
 
 	public boolean isEnd(){
 		return echiquier.isEnd();		

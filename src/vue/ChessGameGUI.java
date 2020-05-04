@@ -20,10 +20,14 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 
     ChessGameControlers chessGameControlers;
     private JPanel[][] panels;
-    Coord initialCoord;
-
+    private JPanel mouseDrawer;
+    private Coord initialCoord;
+    private Coord mouseDelta;
+    private java.util.List<PieceIHM> piecesIHM;
+    private String dragImgFile;
     @Override
     public void mouseClicked(MouseEvent e) {
+        /*
         if(initialCoord == null) {
             initialCoord = getCoordFromClick(e);
             System.out.println(initialCoord);
@@ -34,17 +38,38 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
             chessGameControlers.move(initialCoord, getCoordFromClick(e));
             panels[initialCoord.y][initialCoord.x].setBackground((initialCoord.y+initialCoord.x) % 2 == 0 ? Color.BLACK : Color.WHITE);
             initialCoord = null;
-        }
+        }*/
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        initialCoord = getCoordFromClick(e);
+        if(!chessGameControlers.isPlayerOK(initialCoord)) {
+            initialCoord = null;
+            return;
+        }
+        System.out.println(initialCoord);
 
+        dragImgFile = getImgFileByCoord(getCoordFromClick(e));
+        panels[initialCoord.y][initialCoord.x].setBackground(Color.RED);
+        panels[initialCoord.y][initialCoord.x].removeAll();
+        mouseDelta = new Coord(panels[initialCoord.y][initialCoord.x].getX()-e.getX(), panels[initialCoord.y][initialCoord.x].getY()-e.getY());
+        revealPossibleTargets(initialCoord);
+        drawMousePanel(e);
     }
+
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if(initialCoord == null)
+            return;
+        System.out.println(getCoordFromClick(e));
+        chessGameControlers.move(initialCoord, getCoordFromClick(e));
+        panels[initialCoord.y][initialCoord.x].setBackground((initialCoord.y+initialCoord.x) % 2 == 0 ? Color.BLACK : Color.WHITE);
+        initialCoord = null;
 
+
+        updatePanels();
     }
 
     @Override
@@ -59,23 +84,35 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        if(initialCoord == null)
+            return;
+        drawMousePanel(e);
     }
+
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
     }
 
     @Override
     public void update(Observable o, Object arg) {
         System.out.println("update");
-        java.util.List<PieceIHM> piecesIHM = (List<PieceIHM>) arg;
+        piecesIHM = (List<PieceIHM>) arg;
+        updatePanels();
+    }
+
+    private void clearPanels() {
+        mouseDrawer.removeAll();
+        mouseDrawer.updateUI();
         for(int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 panels[y][x].removeAll();
+                panels[y][x].updateUI();
+                panels[y][x].setBackground((y+x) % 2 == 0 ? Color.BLACK : Color.WHITE);
             }
         }
+    }
+    private void drawPanels() {
         for(PieceIHM pieceIHM : piecesIHM) {
             Couleur color = pieceIHM.getCouleur();
             String imgFile = ChessImageProvider.getImageFile(pieceIHM.getTypePiece(), color);
@@ -86,6 +123,40 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
             }
         }
     }
+    private void drawMousePanel(MouseEvent e) {
+        mouseDrawer.removeAll();
+        mouseDrawer.updateUI();
+        JLabel image = new JLabel( new ImageIcon(dragImgFile));
+        mouseDrawer.setLocation(mouseDelta.x + e.getX(), mouseDelta.y + e.getY());
+        mouseDrawer.add(image, BorderLayout.CENTER);
+        mouseDrawer.updateUI();
+    }
+
+    private void updatePanels() {
+        clearPanels();
+        drawPanels();
+    }
+    private String getImgFileByCoord(Coord c) {
+        for(PieceIHM pieceIHM : piecesIHM) {
+            for(Coord coord : pieceIHM.getList()) {
+                if(coord.x == c.x && coord.y == c.y) {
+                    return ChessImageProvider.getImageFile(pieceIHM.getTypePiece(), pieceIHM.getCouleur());
+                }
+            }
+        }
+        return null;
+    }
+
+    private void revealPossibleTargets(Coord c) {
+        for(int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                if(chessGameControlers.isMoveOk(c, new Coord(x, y))) {
+                    panels[y][x].setBackground(Color.blue);
+                }
+            }
+        }
+    }
+
     public Coord getCoordFromClick(MouseEvent e) {
         return new Coord(e.getX()/(this.getWidth()/8), e.getY()/(this.getHeight()/8));
     }
@@ -95,6 +166,11 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
         this.chessGameControlers = chessGameControler;
         setTitle(name);
         setPreferredSize(new Dimension(boardSize));
+        mouseDrawer = new JPanel();
+        mouseDrawer.setOpaque(false);
+        mouseDrawer.setLayout(new BorderLayout());
+        mouseDrawer.setSize( new Dimension(boardSize.width / 8, boardSize.height / 8));
+        add(mouseDrawer);
         panels = new JPanel[8][8];
         for(int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
@@ -107,9 +183,12 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
                 add(gameCase);
             }
         }
-        //Hotfix
         addMouseListener(this);
         addMouseMotionListener(this);
+
+
+
+        //Hotfix
         add(new JPanel());
     }
 }

@@ -42,7 +42,7 @@ public abstract class AbstractChessGameControler implements ChessGameControlers 
 		if (this.isPlayerOK(initCoord)) {
 
 			// Déplacement métier
-			ret = this.moveModel(initCoord, finalCoord);	 
+			ret = this.moveModel(initCoord, finalCoord);
 
 			// Actions différentes selon les types de controleur
 			if (ret) {	
@@ -52,6 +52,15 @@ public abstract class AbstractChessGameControler implements ChessGameControlers 
 		}
 		return ret;
 	}
+
+	final public boolean isMoveOk(Coord initCoord, Coord finalCoord) {
+		boolean ret = false;
+		if (this.isPlayerOK(initCoord)) {
+			ret = this.isMoveOkModel(initCoord, finalCoord);
+		}
+		return ret;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see controler.AbstractChessGameControler#isPlayerOK(model.Coord)
@@ -63,10 +72,12 @@ public abstract class AbstractChessGameControler implements ChessGameControlers 
 	public abstract boolean isPlayerOK(Coord initCoord) ;
 
 	// Déplacement métier
-	protected  boolean moveModel(Coord initCoord, Coord finalCoord)  {	
-		return chessGame.move(initCoord.x, initCoord.y, finalCoord.x, finalCoord.y);	
+	protected  boolean moveModel(Coord initCoord, Coord finalCoord)  {
+		return chessGame.move(initCoord.x, initCoord.y, finalCoord.x, finalCoord.y);
 	}
-
+	protected  boolean isMoveOkModel(Coord initCoord, Coord finalCoord)  {
+		return chessGame.isMoveOk(initCoord.x, initCoord.y, finalCoord.x, finalCoord.y);
+	}
 	protected abstract void endMove(Coord initCoord, Coord finalCoord, String promotionType) ;
 
 
@@ -89,8 +100,8 @@ public abstract class AbstractChessGameControler implements ChessGameControlers 
 		return this.chessGame.getColorCurrentPlayer();		
 	}	
 
-	protected Couleur getPieceColor(Coord initCoord){		
+	protected Couleur getPieceColor(Coord initCoord){
 		return this.chessGame.getPieceColor(initCoord.x, initCoord.y);		
-	}	
+	}
 	
 }

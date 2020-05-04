@@ -57,7 +57,7 @@ public class Echiquier implements BoardGames {
 
     @Override
     public Couleur getColorCurrentPlayer() {
-        return null;
+        return jeuCourant.getCouleur();
     }
 
     @Override
