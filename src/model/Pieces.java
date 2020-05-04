@@ -7,4 +7,6 @@ public interface Pieces {
     public int getY();
     public boolean isMoveOk(int xFinal, int yFinal);
     public boolean	move(int xFinal, int yFinal);
+
+    public void undoMove(int xFinal, int yFinal);
 }

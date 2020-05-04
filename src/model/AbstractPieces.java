@@ -35,6 +35,10 @@ public abstract class AbstractPieces implements Pieces {
         }
         return moveOk;
     }
+    public void undoMove(int xInit, int yInit) {
+        this.coord.x = xInit;
+        this.coord.y = yInit;
+    }
 
     @Override
     public String toString() {

@@ -10,6 +10,8 @@ public class Jeu {
     private List<Pieces> pieces;
     private boolean isCastling = false;
     private boolean isCapturePossible = false;
+    private Pieces lastCapture;
+    private Coord lastCaptureCoord;
 
     public Jeu(Couleur couleur) {
         pieces = ChessPiecesFactory.newPieces(couleur);
@@ -20,6 +22,10 @@ public class Jeu {
         Pieces piece = findPiece(xCatch, yCatch);
         if(piece != null) {
             capture = piece.capture();
+        }
+        if(capture) {
+            lastCapture = piece;
+            lastCaptureCoord = new Coord(xCatch, yCatch);
         }
         return capture;
     }
@@ -101,10 +107,17 @@ public class Jeu {
     }
     boolean	move(int xInit, int yInit, int xFinal, int yFinal) {
         boolean moveOk = false;
+        lastCaptureCoord = null;
         Pieces piece = findPiece(xInit, yInit);
         if(piece != null)
             moveOk = piece.move(xFinal, yFinal);
         return moveOk;
+    }
+
+    public void undoMove(int xFinal, int yFinal, int xInit, int yInit) {
+        Pieces piece = findPiece(xFinal, yFinal);
+        if(piece != null)
+            piece.undoMove(xInit, yInit);
     }
     boolean	pawnPromotion(int xFinal, int yfinal, String type) {
         //TODO pawnPromotion implementation + call
@@ -117,8 +130,10 @@ public class Jeu {
         isCapturePossible = true;
     }
     void undoCapture() {
-    }
-    void undoMove() {
+        if(lastCaptureCoord != null) {
+            lastCapture.undoMove(lastCaptureCoord.x, lastCaptureCoord.y);
+            lastCaptureCoord = null;
+        }
     }
     private Pieces findPiece(int x, int y) {
         Pieces piece = null;
@@ -153,4 +168,5 @@ public class Jeu {
         System.out.println(noir.move(1,1, 1, 3));
         System.out.println(noir);
     }
+
 }

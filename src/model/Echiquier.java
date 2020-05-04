@@ -27,15 +27,20 @@ public class Echiquier implements BoardGames {
         if(isMoveOk(xInit, yInit, xFinal, yFinal)) {
             ret = jeuCourant.move(xInit, yInit, xFinal, yFinal);
         }
+
+        if(shouldCapture && ret) {
+            jeuNonCourant.capture(xFinal, yFinal);
+        }
         //check si on est en échec
         if(ret && enEchec()) {
-            //TODO: undoMove implementation
-            //jeuCourant.undoMove();
-            jeuCourant.move(xFinal, yFinal, xInit, yInit);
+            //TODO: undoMove implementation, //For now, it's just a move function without checks /!\store last move, and cancel it properly in lower classes
+            //TODO: check if player has lost->check all possible moves, and if no one is possible, player has lost
+            //TODO: check after catpure + undoCapture
+            System.out.println("Joueur " + jeuCourant.getCouleur() + " en echec, peut être une défaite ?");
+            jeuCourant.undoMove(xFinal, yFinal, xInit, yInit);
+            if(shouldCapture)
+                jeuNonCourant.undoCapture();
             ret = false;
-        }
-        else if(shouldCapture && ret) {
-            jeuNonCourant.capture(xFinal, yFinal);
         }
 
         return ret;
@@ -78,11 +83,18 @@ public class Echiquier implements BoardGames {
     public boolean enEchec() {
         boolean ret = false;
         for(Pieces p : jeuNonCourant.getPieces()) {
+            if(p.getX()==-1) continue;
             Coord kingCoord = jeuCourant.getKingCoord();
+
+            //Changement du joueur pour tester l'echec
+            switchJoueur();
             if(isMoveOk(p.getX(), p.getY(), kingCoord.x, kingCoord.y)) {
                 ret = true;
-                break;
             }
+            //Restauration du joueur courant
+            switchJoueur();
+            if(ret)
+                break;
         }
         return ret;
     }
@@ -101,7 +113,7 @@ public class Echiquier implements BoardGames {
             ret = false;
 
         else if( getPieceColor(xFinal, yFinal) == jeuCourant.getCouleur()) {
-            // TODO: handle roque
+            // TODO: handle castling
             ret = false;
         }
         else if (getPieceColor(xFinal, yFinal) == jeuNonCourant.getCouleur()) {
@@ -167,6 +179,7 @@ public class Echiquier implements BoardGames {
         }
     }
 
+
     @Override
     public String toString() {
         return jeuNoir.toString() + "\n" + jeuBlanc.toString();
@@ -175,4 +188,5 @@ public class Echiquier implements BoardGames {
         Echiquier eq = new Echiquier();
         System.out.println(eq);
     }
+
 }
